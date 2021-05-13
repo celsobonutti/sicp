@@ -1,3 +1,5 @@
+#lang racket
+
 (define (square x) (* x x))
 
 (define (sum-of-squares x y)
@@ -5,15 +7,6 @@
 
 (define (f a)
   (sum-of-squares (+ a 1) (* a 2)))
-
-(define (abs x)
-  (cond ((> x 0) x)
-        ((= x 0) 0)
-        ((< x 0) (- x))))
-
-(define (abs x)
-  (cond ((< x 0) (- x))
-        (else x)))
 
 (define (abs x)
   (if (< x 0)
@@ -34,26 +27,10 @@
           (sum-of-squares x z))
       (if (> x z)
           (sum-of-squares x y)
-          (sum-of-squares y z))
-      )
-  )
-
-(define (sqrt-iter guess x)
-  (if (good-enough? guess x)
-      guess
-      (sqrt-iter (improve guess x) x)))
-
-(define (improve guess x)
-  (average guess (/ x guess)))
+          (sum-of-squares y z))))
 
 (define (average x y)
   (/ (+ x y) 2))
-
-(define (good-enough? guess x)
-  (< (abs (- (square guess) x)) 0.001))
-
-(define (sqrt x)
-  (sqrt-iter 1.0 x))
 
 (define (cube-root-iter guess x)
   (if (cube-good-enough? guess x)
@@ -70,3 +47,14 @@
 
 (define (cube-root x)
   (cube-root-iter 1.0 x))
+
+(define (sqrt x)
+  (define (improve guess)
+    (average guess (/ x guess)))
+  (define (good-enough? guess)
+    (< (abs (- (square guess) x)) 0.001))
+  (define (sqrt-iter guess)
+    (if (good-enough? guess)
+        guess
+        (sqrt-iter (improve guess))))
+  (sqrt-iter 1.0))
