@@ -33,16 +33,64 @@
 (define except-first-denomination cdr)
 (define no-more? null?)
 
-(define (filter fn items)
+(define (filter proc items)
   (if (null? items)
       '()
       (let ((head (car items))
-            (tail (cdr items)))
-        (if (fn head)
-            (cons head (filter fn tail))
-            (filter fn tail)))))
+            (filtered-tail (filter proc (cdr items))))
+        (if (proc head)
+            (cons head filtered-tail)
+            filtered-tail))))
 
 (define (same-parity . items)
   (filter
    (if (even? (car items)) even? odd?)
    items))
+
+(define (map proc items)
+  (if (null? items)
+      '()
+      (cons (proc (car items)) (map proc (cdr items)))))
+
+(define (for-each proc items)
+  (if (null? items)
+      #t
+      (begin
+        (proc (car items))
+        (for-each proc (cdr items)))))
+
+(for-each (lambda (x) (newline) (display x)) (list 1 2 3 4))
+
+(define (count-leaves x)
+  (cond ((null? x) 0)
+        ((not (pair? x)) 1)
+        (else (+ (count-leaves (car x))
+                 (count-leaves (cdr x))))))
+
+(define (reverse items)
+  (define (reverse-iter remaining accumulator)
+    (if (null? remaining)
+        accumulator
+        (reverse-iter (cdr remaining) (cons (car remaining) accumulator))))
+  (reverse-iter items '()))
+
+(define (deep-reverse items)
+  (define (reverse-iter remaining accumulator)
+    (if (null? remaining)
+        accumulator
+        (reverse-iter (cdr remaining)
+                      (cons
+                       (if (pair? (car remaining))
+                           (deep-reverse (car remaining))
+                           (car remaining))
+                       accumulator))))
+  (reverse-iter items '()))
+
+(define x (list (list 1 (list 3 4 5)) (list 3 4)))
+
+(define (fringe tree)
+  (if (null? tree)
+      '()
+      (if (pair? (car tree))
+          (append (fringe (car tree)) (fringe (cdr tree)))
+          (cons (car tree) (fringe (cdr tree))))))
