@@ -59,7 +59,7 @@
         (proc (car items))
         (for-each proc (cdr items)))))
 
-(for-each (lambda (x) (newline) (display x)) (list 1 2 3 4))
+(for-each (λ (x) (newline) (display x)) (list 1 2 3 4))
 
 (define (count-leaves x)
   (cond ((null? x) 0)
@@ -94,3 +94,74 @@
       (if (pair? (car tree))
           (append (fringe (car tree)) (fringe (cdr tree)))
           (cons (car tree) (fringe (cdr tree))))))
+
+(define (make-mobile left right)
+  (list left right))
+
+(define (make-branch length structure)
+  (list length structure))
+
+(define (left-branch mobile)
+  (car mobile))
+
+(define (right-branch mobile)
+  (cadr mobile))
+
+(define (branch-length branch)
+  (car branch))
+
+(define (branch-structure branch)
+  (cadr branch))
+
+(define (branch-weight branch)
+    (if (list? (branch-structure branch))
+        (total-weight (branch-structure branch))
+        (branch-structure branch)))
+
+(define (total-weight mobile)
+  (+ (branch-weight (left-branch mobile))
+     (branch-weight (right-branch mobile))))
+
+(define (balanced? mobile)
+  (define (calculate-torque branch)
+    (* (branch-length branch) (branch-weight branch)))
+  (let* ((left-torque (calculate-torque (left-branch mobile)))
+         (right-torque (calculate-torque (right-branch mobile))))
+    (= left-torque right-torque)))
+
+(define (tree-map proc tree)
+  (if (null? tree)
+      '()
+      (cons (if (list? (car tree))
+                (tree-map proc (car tree))
+                (proc (car tree)))
+            (tree-map proc (cdr tree)))))
+
+
+(define tree (list 1 2 3 (list 2 3) (list 1 (list 2 3 (list 4)))))
+
+(define (square x)
+  (* x x))
+
+(define (square-tree tree)
+  (tree-map square tree))
+
+(square-tree tree)
+
+(define (subsets s)
+  (if (null? s)
+      (list null)
+      (let ((rest (subsets (cdr s))))
+        (append rest (map
+                      (λ (r) (cons (car s) r))
+                      rest)))))
+
+
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+          (accumulate op initial (cdr sequence)))))
+
+(define (equal? fst snd)
+  (if (= null)))

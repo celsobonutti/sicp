@@ -18,10 +18,10 @@
   (sum id a inc b))
 
 (define (compose f g)
-  (lambda (x) (f (g x))))
+  (λ (x) (f (g x))))
 
 (define (double f)
-  (lambda (x) (f (f x))))
+  (λ (x) (f (f x))))
 
 (define (square x) (* x x))
 
@@ -39,16 +39,16 @@
     (if (good-enough? x)
         x
         (iter (improve x))))
-  (lambda (x)
+  (λ (x)
     (iter x)))
 
 (define (average x y)
   (/ (+ x y) 2))
 
 (define (sqrt x)
-  ((iterative-improve (lambda (guess)
+  ((iterative-improve (λ (guess)
                         (< (abs (- (square guess) x)) 0.001))
-                      (lambda (guess)
+                      (λ (guess)
                         (average guess (/ x guess))))
    1.0))
 
