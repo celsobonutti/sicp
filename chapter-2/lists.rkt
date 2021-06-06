@@ -164,4 +164,8 @@
           (accumulate op initial (cdr sequence)))))
 
 (define (equal? fst snd)
-  (if (= null)))
+  (if (list? fst snd)
+      (and
+       (eq? (car fst) (car snd))
+       (equal? (cdr fst) (cdr snd)))
+      (eq? fst snd)))
