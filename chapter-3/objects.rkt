@@ -86,3 +86,11 @@
            (begin
              (set! x (* x 2))
              result))))
+
+(define (make-withdraw-let initial-amount)
+  (let ((balance initial-amount))
+    (λ (amount)
+      (if (>= balance amount)
+          (begin (set! balance (- balance amount))
+                 balance)
+          "Insufficient funds"))))
